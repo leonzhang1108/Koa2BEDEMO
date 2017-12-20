@@ -1,0 +1,20 @@
+{
+  "name": "Koa2BEDEMO",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "babel-node server.js",
+    "koa": "babel-node koa-server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0"
+  },
+  "dependencies": {
+    "koa": "^2.4.1"
+  }
+}
