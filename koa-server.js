@@ -1,45 +1,45 @@
 import Koa from 'koa'
 import logger from './middleware/logger-async'
 import Router from 'koa-router'
+import bodyParser from 'koa-bodyparser'
 import {
   render
 } from './utils/util'
 const app = new Koa()
 
-
-
-// middleware 
+// middleware
+// logger 
 app.use(logger())
+// bodyParser
+app.use(bodyParser())
 
-let home = new Router()
-
-// 子路由1
-home.get('/', async ( ctx )=>{
-  let html = `
-    <ul>
-      <li><a href="/page/helloworld">/page/helloworld</a></li>
-      <li><a href="/page/404">/page/404</a></li>
-    </ul>
-  `
-  ctx.body = html
+// response 
+app.use(async ctx => {
+  if ( ctx.url === '/' && ctx.method === 'GET' ) {
+    // 当GET请求时候返回表单页面
+    let html = `
+      <h1>koa2 request post demo</h1>
+      <form method="POST" action="/">
+        <p>userName</p>
+        <input name="userName" /><br/>
+        <p>nickName</p>
+        <input name="nickName" /><br/>
+        <p>email</p>
+        <input name="email" /><br/>
+        <button type="submit">submit</button>
+      </form>
+    `
+    ctx.body = html
+  } else if ( ctx.url === '/' && ctx.method === 'POST' ) {
+    // 当POST请求的时候，中间件koa-bodyparser解析POST表单里的数据，并显示出来
+    let postData = ctx.request.body
+    console.log(postData)
+    ctx.body = postData
+  } else {
+    // 其他请求显示404
+    ctx.body = '<h1>404！！！ o(╯□╰)o</h1>'
+  }
 })
-
-// 子路由2
-let page = new Router()
-page.get('/404', async ( ctx )=>{
-  ctx.body = '404 page!'
-}).get('/helloworld', async ( ctx )=>{
-  ctx.body = 'helloworld page!'
-})
-
-// 装载所有子路由
-let router = new Router()
-router.use('/', home.routes(), home.allowedMethods())
-router.use('/page', page.routes(), page.allowedMethods())
-
-// 加载路由中间件
-app.use(router.routes()).use(router.allowedMethods())
-
 
 app.listen(3000, err => {
   if (err) {
