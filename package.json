@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "babel-node server.js",
-    "koa": "babel-node koa-server.js"
+    "dev": "babel-node koa-server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +15,15 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
     "koa": "^2.4.1",
     "koa-bodyparser": "^4.2.0",
     "koa-mysql-session": "^0.0.2",
     "koa-router": "^7.3.0",
     "koa-session-minimal": "^3.0.4",
-    "koa-static": "^4.0.2"
+    "koa-static": "^4.0.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   }
 }
