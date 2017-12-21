@@ -1,33 +1,51 @@
 import Koa from 'koa'
-import logger from './middleware/logger-async'
-import Router from 'koa-router'
-import path from 'path'
-import bodyParser from 'koa-bodyparser'
-import koa_static from 'koa-static'
-import {
-  render
-} from './utils/util'
+import MysqlSession from 'koa-mysql-session'
+import session from 'koa-session-minimal'
+
 const app = new Koa()
 
-// middleware
-// logger 
-app.use(logger())
-// bodyParser
-app.use(bodyParser())
-
-// response 
-app.use(koa_static(
-  path.join(__dirname)
-))
-
-app.use( async ( ctx ) => {
-  ctx.body = 'hello world'
+// 配置存储session信息的mysql
+let store = new MysqlSession({
+  user: 'root',
+  password: '9liang01108',
+  database: 'koa_demo',
+  host: '127.0.0.1',
 })
 
-app.listen(3000, err => {
-  if (err) {
-    console.log(err)
-    return
+// 存放sessionId的cookie配置
+let cookie = {
+  maxAge: '', // cookie有效时长
+  expires: '', // cookie失效时间
+  path: '', // 写cookie所在的路径
+  domain: '', // 写cookie所在的域名
+  httpOnly: '', // 是否只用于http请求中获取
+  overwrite: '', // 是否允许重写
+  secure: '',
+  sameSite: '',
+  signed: '',
+
+}
+
+// 使用session中间件
+app.use(session({
+  key: 'SESSION_ID',
+  store: store,
+  cookie: cookie
+}))
+
+app.use(async(ctx) => {
+  // 设置session
+  if (ctx.url === '/set') {
+    ctx.session = {
+      user_id: Math.random().toString(36).substr(2),
+      count: 0
+    }
+  } else if (ctx.url === '/') {
+    // 读取session信息
+    ctx.session.count = ctx.session.count + 1
   }
-  console.log('localhost:3000')
+  ctx.body = ctx.session
 })
+
+app.listen(3000)
+console.log('[demo] session is starting at port 3000')
